@@ -214,7 +214,7 @@ breach/
 - **The Stanley Parable** - Narrative density
 
 ---
-
+\n\n## Implementation Details\n\nFor detailed information about the game architecture, systems, and development status, see [IMPLEMENTATION.md](IMPLEMENTATION.md)
 **Version**: 0.1.0 (Pre-Alpha)  
 **License**: MIT  
 **Author**: Vertynskiy
