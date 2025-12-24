@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Breach - Management Horror Game
-Entry point for the game
+Entry point for the game with menu support
 """
 
 import pygame
@@ -32,11 +32,17 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             
+            # Exit on ESC key
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            
             # Pass event to screen manager
             screen_manager.handle_event(event)
         
         # Update game state
-        game_state.update(clock.get_time() / 1000.0)  # Convert ms to seconds
+        delta_time = clock.get_time() / 1000.0  # Convert ms to seconds
+        game_state.update(delta_time)
         
         # Update UI
         screen_manager.update()
