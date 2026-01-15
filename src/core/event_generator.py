@@ -1,8 +1,3 @@
-"""
-Event Generator
-Generates game events (routine, anomalous, critical) with difficulty-based probability
-"""
-
 import random
 from settings import DIFFICULTIES
 
