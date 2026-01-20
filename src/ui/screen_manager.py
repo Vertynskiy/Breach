@@ -13,7 +13,6 @@ from src.ui.menu_screen import MainMenuScreen
 
 class ScreenType(Enum):
     """Screen types in the game"""
-    MAIN_MENU = 0
     MAIN_MENU = 1
     OBSERVATION = 2  # Main observation room
     CONTROL_PANEL = 3  # Control panel
