@@ -8,10 +8,11 @@ from enum import Enum
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLOR_DARK_GRAY, COLOR_WHITE, COLOR_GREEN
 from src.ui.ui_elements import Button, TextDisplay, Panel, StatusBar
 from src.assets.texture_generator import get_texture_generator
-
+from src.ui.menu_screen import MainMenuScreen
 
 class ScreenType(Enum):
     """Screen types in the game"""
+    MAIN_MENU = 0
     MAIN_MENU = 1
     OBSERVATION = 2  # Main observation room
     CONTROL_PANEL = 3  # Control panel
@@ -250,9 +251,9 @@ class ScreenManager:
     def __init__(self, game_state):
         """Initialize screen manager"""
         self.game_state = game_state
-        self.current_screen = ScreenType.OBSERVATION
+        self.current_screen = ScreenType.MAIN_MENU  # Начинаем с главного меню!
 
-        # Create all screens
+        # Create all game screens
         self.screens = {
             ScreenType.OBSERVATION: ObservationScreen(game_state),
             ScreenType.CONTROL_PANEL: ControlPanelScreen(game_state),
@@ -260,6 +261,16 @@ class ScreenManager:
             ScreenType.LABORATORY: LaboratoryScreen(game_state),
             ScreenType.JOURNAL: JournalScreen(game_state),
         }
+
+        # Create main menu with callback
+        self.screens[ScreenType.MAIN_MENU] = MainMenuScreen(self._on_difficulty_selected)
+
+    def _on_difficulty_selected(self, difficulty):
+        """Called when player selects difficulty from main menu"""
+        # Set game difficulty
+        self.game_state.difficulty = difficulty
+        # Switch to observation screen to start the game
+        self.switch_screen(ScreenType.OBSERVATION)
 
     def switch_screen(self, screen_type: ScreenType):
         """Switch to another screen"""
@@ -276,6 +287,8 @@ class ScreenManager:
                 pygame.K_3: ScreenType.MONITORS,
                 pygame.K_4: ScreenType.LABORATORY,
                 pygame.K_5: ScreenType.JOURNAL,
+                pygame.K_0: ScreenType.MAIN_MENU,  # Можно вернуться на меню нажатием 0
+
             }
             if event.key in key_map:
                 self.switch_screen(key_map[event.key])
