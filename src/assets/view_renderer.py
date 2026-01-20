@@ -2,7 +2,6 @@
 View Renderer - Draws different camera views for the observation screens
 Procedurally generates windows, forest, tables, control rooms, engines, etc.
 """
-
 import pygame
 import random
 from typing import Tuple
@@ -88,8 +87,8 @@ class ViewRenderer:
         pygame.draw.rect(surface, (30, 30, 40), monitor_rect)
         pygame.draw.rect(surface, (100, 150, 200), monitor_rect, 2)
         pygame.draw.rect(surface, (40, 50, 60),
-                       (monitor_rect.x + 5, monitor_rect.y + 5,
-                        monitor_rect.width - 10, monitor_rect.height - 12))
+                        (monitor_rect.x + 5, monitor_rect.y + 5,
+                         monitor_rect.width - 10, monitor_rect.height - 12))
 
         # Documents
         for i in range(3):
@@ -130,4 +129,11 @@ class ViewRenderer:
         # Main console
         console_rect = pygame.Rect(rect.x + 50, rect.y + rect.height - 80, 250, 70)
         pygame.draw.rect(surface, (40, 40, 50), console_rect)
-        pygame.draw.
+        pygame.draw.rect(surface, (100, 150, 200), console_rect, 2)
+
+        # Console screen
+        screen_rect = pygame.Rect(console_rect.x + 10, console_rect.y + 10, 230, 30)
+        pygame.draw.rect(surface, (0, 50, 0), screen_rect)
+
+        # Blinking indicator light
+        pygame.draw.circle(surface, (255, 0, 0), (console_rect.right - 20, console_rect.centery), 5)
