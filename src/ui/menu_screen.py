@@ -2,35 +2,41 @@
 Main Menu Screen for Breach
 Displays difficulty selection and start button
 """
-
 import pygame
 from src.ui.ui_elements import Button, TextDisplay, Panel
 from src.assets.texture_generator import get_texture_generator
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLOR_WHITE, COLOR_GREEN, COLOR_YELLOW
 
+
 class MainMenuScreen:
     """Main menu with difficulty selection"""
 
     def __init__(self, on_start_callback):
-        """Initialize menu
-        on_start_callback: function that takes difficulty as parameter
-        """
+        """Initialize menu with image loading"""
         self.title_font = pygame.font.Font(None, 72)
         self.subtitle_font = pygame.font.Font(None, 32)
         self.font = pygame.font.Font(None, 20)
         self.info_font = pygame.font.Font(None, 16)
 
-        # Background
-        self.bg_texture = get_texture_generator().generate_screen_background(
-            SCREEN_WIDTH, SCREEN_HEIGHT
-        )
-        self.title_bar = get_texture_generator().generate_title_bar(SCREEN_WIDTH, 80)
+        # Загрузи фоновое изображение главного меню
+        from src.assets.asset_loader import get_asset_loader
+        asset_loader = get_asset_loader()
+        self.bg_texture = asset_loader.load('bg_main_menu')
+
+        # Если изображение не загрузилось - создай заглушку
+        if self.bg_texture is None:
+            print("⚠️ Фон главного меню не найден, использую заглушку")
+            self.bg_texture = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.bg_texture.fill((20, 20, 30))
+
+        # Для заголовка - заглушка (потом уберём, если не нужно)
+        self.title_bar = pygame.Surface((SCREEN_WIDTH, 0))
 
         # State
-        self.selected_difficulty = 'normal'  # normal, hard, insane
+        self.selected_difficulty = 'normal'
         self.on_start_callback = on_start_callback
 
-        # Difficulty panels (will show selection state)
+        # Difficulty panels
         self.difficulty_panels = {
             'normal': Panel(100, 250, 300, 200, "NORMAL"),
             'hard': Panel(490, 250, 300, 200, "HARD"),
@@ -91,7 +97,7 @@ class MainMenuScreen:
             elif event.key == pygame.K_RETURN:
                 self._on_start_clicked()
 
-    def update(self):
+    def update(self, game_state):
         """Update menu state"""
         pass
 
