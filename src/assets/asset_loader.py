@@ -5,20 +5,45 @@ Loads PNG images from assets/images/ directory
 import os
 import pygame
 from typing import Dict, Optional
+import sys
 
 
 class AssetLoader:
     """Loads and caches game assets (images)"""
 
     def __init__(self):
-        self.assets_dir = "assets/images"
+        # Получи корневую директорию проекта
+        # Это важно, чтобы найти папку assets относительно проекта
+        if getattr(sys, 'frozen', False):
+            # Если запущено как exe
+            project_root = os.path.dirname(sys.executable)
+        else:
+            # Если запущено как скрипт Python
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+        self.assets_dir = os.path.join(project_root, "assets", "images")
         self.cache: Dict[str, pygame.Surface] = {}
         self.missing_assets: set = set()
+
+        print(f"📁 Корневая папка проекта: {project_root}")
+        print(f"📁 Папка активов: {self.assets_dir}")
 
         # Проверь, что папка существует
         if not os.path.exists(self.assets_dir):
             os.makedirs(self.assets_dir, exist_ok=True)
             print(f"⚠️ Создана папка {self.assets_dir} - положи туда PNG файлы!")
+        else:
+            # Покажи, какие файлы есть в папке
+            try:
+                files = os.listdir(self.assets_dir)
+                if files:
+                    print(f"📦 Файлы в папке активов:")
+                    for f in files:
+                        print(f"   - {f}")
+                else:
+                    print(f"⚠️ Папка активов пуста!")
+            except Exception as e:
+                print(f"❌ Ошибка при чтении папки: {e}")
 
     def load(self, filename: str) -> Optional[pygame.Surface]:
         """
@@ -34,12 +59,15 @@ class AssetLoader:
         if filename in self.cache:
             return self.cache[filename]
 
-        filepath = f"{self.assets_dir}/{filename}.png"
+        filepath = os.path.join(self.assets_dir, f"{filename}.png")
+
+        print(f"🔍 Ищу файл: {filepath}")
 
         # Проверь, существует ли файл
         if not os.path.exists(filepath):
             if filename not in self.missing_assets:
-                print(f"❌ ОШИБКА: Не найден файл {filepath}")
+                print(f"❌ ОШИБКА: Файл не найден: {filepath}")
+                print(f"   Проверь, что файл {filename}.png находится в {self.assets_dir}")
                 self.missing_assets.add(filename)
             return None
 
